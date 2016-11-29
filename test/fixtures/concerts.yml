@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  date: 2016-11-29 15:36:59
+  url: MyString
+  genre: MyString
+  subgenre: MyString
+  sale: false
+  image: MyString
+  lat: MyString
+  lon: MyString
+  city: MyString
+  venue: MyString
+  artist: one
+
+two:
+  name: MyString
+  date: 2016-11-29 15:36:59
+  url: MyString
+  genre: MyString
+  subgenre: MyString
+  sale: false
+  image: MyString
+  lat: MyString
+  lon: MyString
+  city: MyString
+  venue: MyString
+  artist: two
