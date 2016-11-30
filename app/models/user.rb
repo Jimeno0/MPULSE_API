@@ -5,4 +5,8 @@ class User < ApplicationRecord
   has_secure_password
 
   has_secure_token
+
+  def as_json(options={})
+    super( only: [:name,:token])
+  end
 end
