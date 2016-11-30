@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
 
-  get '/:token', to: 'users#show'
+  get '/users/:token', to: 'users#show'
   patch '/users', to: 'users#update'
-  resources :users, only: [:destroy, :create]
+  delete '/users', to: 'users#destroy'
+  post '/users', to: 'users#create'
+  # resources :users, only: [:destroy, :create]
 
 end
