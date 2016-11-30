@@ -1,26 +1,26 @@
 class UsersController < ApplicationController
-  # before_action :is_logged_in?, except: [:new, :create]
-  # skip_before_action :is_logged_in?, only: [:new, :create]
-  # before_action :is_themself?, only: [:edit, :update, :destroy]
+
+  skip_before_action :is_logged_in?, only: [:new, :create]
+  before_action :is_themself?, only: [:edit, :update, :destroy]
 
 
   def show
-    render json: { come: "show"}
-    # @user = User.find(params[:id])
+    @user = User.find_by(token: params[:token])
+    render json: { user: @user }
+
   end
 
   # POST /users
   def create
     render json: { come: "create", name: params[:name], password: params[:password]}
-    # @user = User.new(user_params)
-    #
-    # respond_to do |format|
-    #   if @user.save
-    #     format.html { redirect_to @user, notice: 'User was successfully created.' }
-    #   else
-    #     format.html { render :new }
-    #   end
-    # end
+    @user = User.new(user_params)
+
+    if @user.save
+      render json: @user, status: 201
+    else
+      render json: { error: "cannot create user"}, status: 400
+    end
+
   end
 
   # PATCH/PUT /users/1
@@ -46,18 +46,19 @@ class UsersController < ApplicationController
     # end
   end
 
-  # private
+  private
   #   # Never trust parameters from the scary internet, only allow the white list through.
-  #   def user_params
-  #     params.require(:user).permit(:name, :email, :password, :password_confirmation)
-  #   end
+   def user_params
+     params.require(:user).permit(:name, :password, :password_confirmation)
+   end
   #
-  #   def is_themself?
-  #     @user = User.find(params[:id])
-  #     unless current_user.id == @user.id
-  #       redirect_to current_user
-  #     end
-  #   end
+    def is_themself?
+      @user = User.find_by(token: params[:token])
+
+      unless current_user.token == @user.token
+        redirect_to '/'
+      end
+    end
 
 
 end
