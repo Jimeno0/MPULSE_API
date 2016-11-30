@@ -10,4 +10,7 @@ Rails.application.routes.draw do
   patch '/users', to: 'users#update'
   delete '/users', to: 'users#destroy'
 
+
+  get '/concerts/last', to: 'concerts#last'
+  get '/concerts/:search', to: 'concerts#search'
 end
