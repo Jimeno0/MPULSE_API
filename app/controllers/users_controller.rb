@@ -2,10 +2,6 @@ class UsersController < ApplicationController
 
   before_action :current_user, except: [:create]
 
-  def show
-    render json: { user: @user }
-  end
-
   def create
     @user = User.new(user_params)
     if @user.save
