@@ -6,6 +6,11 @@ class User < ApplicationRecord
 
   has_secure_token
 
+  #VALIDACIONES!!!!
+  validates :name, presence: true
+  validates :email, presence: true
+  validates :password, presence: true
+
   def as_json(options={})
     super( only: [:name,:token])
   end
