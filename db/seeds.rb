@@ -12,9 +12,10 @@ User.create(name: "Miguel", email:"miguel@miguel.com", password:"123123123")
 User.create(name: "Daichi", email:"daichi@daichi.com", password:"123123123")
 User.create(name: "Victor", email:"victor@victor.com", password:"123123123")
 
-artist = Artist.create(name: 'Bonobo')
+artist1 = Artist.create(name: 'Bonobo')
+artist2 = Artist.create(name: 'Moderat')
 
-concert1 = artist.concerts.create(
+concert1 = Concert.create(
   name: "Bonobo live",
   date: "2016-12-01",
   url: "http://www.ticketweb.com/t3/sale/SaleEventDetail?dispatch=loadSelectionData&eventId=6970105&REFERRAL_ID=tmfeed",
@@ -30,7 +31,7 @@ concert1 = artist.concerts.create(
   country: "Spain"
   )
 
-concert2 = artist.concerts.create(
+concert2 = Concert.create(
   name: "Dope Basel 2016",
   date: "2016-12-01",
   url: "http://www.ticketweb.com/t3/sale/SaleEventDetail?dispatch=loadSelectionData&eventId=7024855&REFERRAL_ID=tmfeed",
@@ -47,5 +48,8 @@ concert2 = artist.concerts.create(
 )
 
 user1.concerts.push(concert1)
+user1.artists.push(artist1)
+user1.artists.push(artist2)
+user2.concerts.push(concert1)
 user2.concerts.push(concert1)
 user1.concerts.push(concert2)

@@ -1,6 +1,6 @@
 require "http"
 class ConcertsController < ApplicationController
-  before_action :current_user, only: [:index]
+  before_action :current_user, except: [:last, :search]
   def index
     concerts = @user.concerts.all
     render json: concerts
@@ -12,27 +12,34 @@ class ConcertsController < ApplicationController
   end
 
   def create
-    concert = @user.concerts.find_by(concert_id: params[:id])
+    concert = Concert.find_by(concert_id: params[:concert][:concert_id])
     if concert
       if @user.concerts.push(concert)
         render json: concert, status: 200
       else
-        render json: {error: 'concert not found' }, status: 404
+        render json: {error: 'error to push concert' }, status: 400
       end
+
     else
-      artist = Artist.create(name: concert["artist"])
-      if artist.concerts.new(concert)
+      concert = Concert.new(params[:concert])
+      if concert.save
         render json: concert, status: 201
       else
-        render json: {error: 'imposible to create concert' }, status: 400
+        render json: {error: 'impossible to create concert' }, status: 400
       end
     end
   end
 
   def destroy
-    #Comprobar si el concierto pertenece a más usuarios
-    #Si pertenece a más usuarios, desvincular de usuarios
-    #Si solo pertenece a este user, borrar de la bbdd
+    concert = @user.concerts.find_by(concert_id: params[:id])
+    unless concert
+      render json: {error: "user dont have this route as favourite"}, status: 400
+    end
+    if concert.users.size = 1
+      @user.concerts.delete
+    else
+      @user.concerts.delete(concert)
+    end
   end
 
   def last
@@ -43,7 +50,6 @@ class ConcertsController < ApplicationController
   end
 
   def search
-    @artist = params[:search].downcase
     url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&keyword=#{@artist}"
     handle_ticketmaster_API(url)
     render json: {response: @concerts}
@@ -65,9 +71,7 @@ class ConcertsController < ApplicationController
     events = JSON.parse(response.body)['_embedded']['events']
     @concerts = []
     events.each do |event|
-      binding.pry
       concert = {
-        artist: @artist,
         name: event["name"],
         date: event["dates"]["start"]["localDate"],
         url: event["url"],
