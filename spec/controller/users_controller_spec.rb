@@ -5,7 +5,7 @@ RSpec.describe UsersController, type: :controller do
   describe "POST #create" do
     context "on error " do
       it "responds 400 status with no params" do
-        get :create
+        post :create
         expect(response).to have_http_status(400)
       end
       it "responds error with bad email" do
@@ -17,7 +17,7 @@ RSpec.describe UsersController, type: :controller do
 
 
       it "responds an error" do
-        get :create
+        post :create
         expect(JSON.parse(response.body)["error"]).to eq("cannot create user")
       end
     end
