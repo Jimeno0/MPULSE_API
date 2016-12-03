@@ -22,10 +22,6 @@ class UsersController < ApplicationController
    params.permit(:name, :password, :email, :password_confirmation)
   end
 
-  def user_params2
-   params.permit(:name,:email)
-  end
-
   def current_user
     @user = User.find_by(token: params[:token])
     return  render json: { error: "user not found"}, status: 404 unless @user

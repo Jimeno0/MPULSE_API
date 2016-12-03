@@ -12,4 +12,7 @@ Rails.application.routes.draw do
   get '/concerts/search/:search', to: 'concerts#search'
   get '/concerts/favs/:token', to: 'concerts#index'
   get '/concerts/:token/:id', to: 'concerts#show'
+
+  post '/artist', to: 'artists#create'
+  delete '/artist', to: 'artists#destroy'
 end
