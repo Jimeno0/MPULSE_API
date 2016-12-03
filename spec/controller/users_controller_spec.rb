@@ -16,7 +16,7 @@ RSpec.describe UsersController, type: :controller do
       end
 
 
-      it "responds an error" do
+      it "responds an error with no params" do
         post :create
         expect(JSON.parse(response.body)["error"]).to eq("cannot create user")
       end

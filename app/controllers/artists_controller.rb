@@ -4,40 +4,27 @@ class ArtistsController < ApplicationController
 
   def create
     if @artist
-      if @user.artists.push(@artist)
-        render json: @artist, status: 200
-      else
-        render json: {error: 'error to push artist' }, status: 400
-      end
-
+      return render json: @artist, status: 200 if @user.artists.push(@artist)
+      return render json: {error: 'error to push artist' }, status: 400
     else
       @artist = Artist.new(name: params[:artists][:name])
-      if @artist.save
-
-        render json: @artist, status: 201
-      else
-        render json: {error: 'impossible to create artist' }, status: 400
-      end
+      return render json: @artist, status: 201 if @artist.save
+      return render json: {error: 'impossible to create artist' }, status: 400
     end
   end
 
   def destroy
-    artist = @user.artists.find_by(name: @artist.name)
-    unless artist
-      return render json: {error: "user dont have this route as favourite"}, status: 400
-    end
-    if artist.users.size == 1
+    user_artist = @user.artists.find_by(name: @artist.name)
+    return render json: {error: "user dont have this route as favourite"}, status: 400 unless user_artist
 
-      artist.delete
-    else
-      @user.artists.delete(artist)
-    end
+    user_artist.delete if user_artist.users.size <= 1
+    @user.artists.delete(user_artist) if user_artist.users.size > 1
+
     render json: {error: "artist removed as favorite"}, status: 200
   end
 
 
   private
-
   def find_artist
     @artist = Artist.find_by(name: params[:artists][:name].capitalize)
   end
@@ -46,5 +33,4 @@ class ArtistsController < ApplicationController
     @user = User.find_by(token: params[:token])
     return  render json: { error: "user not found"}, status: 404 unless @user
   end
-
 end
