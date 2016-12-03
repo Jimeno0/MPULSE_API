@@ -45,6 +45,7 @@ RSpec.describe ArtistsController, type: :controller do
     before(:each) do
       @user = User.create(name:"Artistslover2", email:"Artistslover2@Artistslover.com",password:"123123123")
       @user2 = User.create(name:"Artistslover3", email:"Artistslover3@Artistslover.com",password:"123123123")
+      Artist.create(name: "Moderat")
       @token = @user.token
     end
 
@@ -61,23 +62,23 @@ RSpec.describe ArtistsController, type: :controller do
 
     context "when artist is an user's favorite" do
       before(:each) do
-        @artist = Artist.create(name: "Moderat")
+        @artist = Artist.create(name: "Apparat")
         @user.artists.push(@artist)
       end
       it "returns 200 status" do
-        post :destroy, token: @token, artists: {name: "Moderat"}
+        post :destroy, token: @token, artists: {name: "Apparat"}
         expect(response).to have_http_status(200)
       end
 
       it "deletes the artist form DDBB if only belongs to one user" do
-        post :destroy, token: @token, artists: {name: "Moderat"}
-        expect(Artist.find_by(name: "Moderat")).to be_nil
+        post :destroy, token: @token, artists: {name: "Apparat"}
+        expect(Artist.find_by(name: "Apparat")).to be_nil
       end
 
       it "removes de connection if belongs to more than one user" do
         @user2.artists.push(@artist)
-        post :destroy, token: @token, artists: {name: "Moderat"}
-        expect(Artist.find_by(name: "Moderat")).to be_truthy
+        post :destroy, token: @token, artists: {name: "Apparat"}
+        expect(Artist.find_by(name: "Apparat")).to be_truthy
       end
     end
 
