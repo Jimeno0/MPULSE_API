@@ -42,13 +42,42 @@ RSpec.describe ArtistsController, type: :controller do
     end
   end
   describe "POST #destroy" do
-    context "when artist is not an user's favourite" do
-      before(:all) do
-        user = User.create(name:"Artistslover", email:"Artistslover@Artistslover.com",password:"123123123")
-        @token = user.token
-      end
-      it "returns error 400 " do
+    before(:each) do
+      @user = User.create(name:"Artistslover2", email:"Artistslover2@Artistslover.com",password:"123123123")
+      @user2 = User.create(name:"Artistslover3", email:"Artistslover3@Artistslover.com",password:"123123123")
+      @token = @user.token
+    end
 
+    context "when artist is not an user's favorite" do
+      it "returns error 400 " do
+        post :destroy, token: @token, artists: {name: "Moderat"}
+        expect(response).to have_http_status(400)
+      end
+      it "return error msg " do
+        post :destroy, token: @token, artists: {name: "Moderat"}
+        expect(JSON.parse(response.body)["error"]).to eq("user dont have this route as favourite")
+      end
+    end
+
+    context "when artist is an user's favorite" do
+      before(:each) do
+        @artist = Artist.create(name: "Moderat")
+        @user.artists.push(@artist)
+      end
+      it "returns 200 status" do
+        post :destroy, token: @token, artists: {name: "Moderat"}
+        expect(response).to have_http_status(200)
+      end
+
+      it "deletes the artist form DDBB if only belongs to one user" do
+        post :destroy, token: @token, artists: {name: "Moderat"}
+        expect(Artist.find_by(name: "Moderat")).to be_nil
+      end
+
+      it "removes de connection if belongs to more than one user" do
+        @user2.artists.push(@artist)
+        post :destroy, token: @token, artists: {name: "Moderat"}
+        expect(Artist.find_by(name: "Moderat")).to be_truthy
       end
     end
 

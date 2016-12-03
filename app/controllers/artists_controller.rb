@@ -24,11 +24,13 @@ class ArtistsController < ApplicationController
 
   def destroy
     artist = @user.artists.find_by(name: params[:artists][:name].capitalize)
+
     unless artist
       return render json: {error: "user dont have this route as favourite"}, status: 400
     end
-    if artist.users.size = 1
-      @user.artists.delete
+    if  artist.users.size == 1
+
+      artist.delete
     else
       @user.artists.delete(artist)
     end
