@@ -3,19 +3,13 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.save
-      render json: @user, status: 201
-    else
-      render json: { error: "cannot create user"}, status: 400
-    end
+    return render json: @user, status: 201 if @user.save
+    render json: { error: "cannot create user"}, status: 400
   end
 
   def update
-    if @user.update(user_params)
-      render json: @user, status: 201
-    else
-      render json: { error: "cannot update user"}, status: 400
-    end
+    return render json: @user, status: 201 if @user.update(user_params)
+    render json: { error: "cannot update user"}, status: 400
   end
 
   def destroy
@@ -34,9 +28,6 @@ class UsersController < ApplicationController
 
   def current_user
     @user = User.find_by(token: params[:token])
-    unless @user
-      render json: { error: "user not found"}, status: 404
-      return
-    end
+    return  render json: { error: "user not found"}, status: 404 unless @user
   end
 end
