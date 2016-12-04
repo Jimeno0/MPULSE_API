@@ -56,7 +56,7 @@ RSpec.describe ArtistsController, type: :controller do
       end
       it "return error msg " do
         post :destroy, token: @token, artists: {name: "Moderat"}
-        expect(JSON.parse(response.body)["error"]).to eq("user dont have this route as favourite")
+        expect(JSON.parse(response.body)["error"]).to eq("user dont have this artist as favourite")
       end
     end
 

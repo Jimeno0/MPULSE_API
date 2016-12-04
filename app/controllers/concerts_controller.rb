@@ -13,25 +13,26 @@ class ConcertsController < ApplicationController
 
   def create
     concert = Concert.find_by(concert_id: params[:concert][:concert_id])
+    if concert
+      return render json: concert, status: 200 if @user.concerts.push(concert)
+      return render json: {error: 'error to push concert' }, status: 400
+    else
+      concert = Concert.new(concert_params)
+      return render json: {error: 'impossible to create concert' }, status: 400 unless concert.save
 
-    concert = Concert.new(params[:concert]) unless concert
-    render json: {error: 'error to create concert' }, status: 400 if concert.error
-    concert.save
-
-    @user.concerts.push(concert)
-    render json: concert, status: 201
+      @user.concerts.push(concert)
+      return render json: concert, status: 201
+    end
   end
 
   def destroy
-    concert = @user.concerts.find_by(concert_id: params[:id])
-    unless concert
-      render json: {error: "user dont have this route as favourite"}, status: 400
-    end
-    if concert.users.size = 1
-      @user.concerts.delete
-    else
-      @user.concerts.delete(concert)
-    end
+    user_concert = @user.concerts.find_by(concert_id: params[:concert][:concert_id])
+    return render json: {error: "user dont have this concert as favourite"}, status: 400 unless user_concert
+
+    user_concert.delete if user_concert.users.size <= 1
+    @user.concerts.delete(user_concert) if user_concert.users.size > 1
+
+    render json: user_concert, status: 200
   end
 
   def last
@@ -47,6 +48,11 @@ class ConcertsController < ApplicationController
   end
 
   private
+
+  private
+  def concert_params
+   params.require(:concert).permit(:name, :date, :url, :genre, :subgenre, :country, :lat, :long, :city, :venue, :concert_id, :sale, :image)
+  end
 
   def current_user
     @user = User.find_by(token: params[:token])

@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   get '/concerts/favs/:token', to: 'concerts#index'
   get '/concerts/:token/:id', to: 'concerts#show'
 
+  post '/concerts/add', to: 'concerts#create'
+  delete '/concerts/', to: 'concerts#destroy'
+
   post '/artist', to: 'artists#create'
   delete '/artist', to: 'artists#destroy'
 end
