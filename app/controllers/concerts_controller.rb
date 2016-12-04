@@ -8,7 +8,7 @@ class ConcertsController < ApplicationController
 
   def show
     concert = @user.concerts.find_by(concert_id: params[:id])
-    render json: concert
+    render json: concert, status: 200
   end
 
   def create

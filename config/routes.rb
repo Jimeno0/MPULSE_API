@@ -10,8 +10,8 @@ Rails.application.routes.draw do
 
   get '/concerts/last', to: 'concerts#last'
   get '/concerts/search/:search', to: 'concerts#search'
-  get '/concerts/favs/:token', to: 'concerts#index'
-  get '/concerts/:token/:id', to: 'concerts#show'
+  get '/concerts/:token', to: 'concerts#index'
+  get '/concerts/:token/:concert_id', to: 'concerts#show'
 
   post '/concerts/add', to: 'concerts#create'
   delete '/concerts/', to: 'concerts#destroy'
