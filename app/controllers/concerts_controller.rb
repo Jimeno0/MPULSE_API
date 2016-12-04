@@ -1,24 +1,19 @@
-require "http"
 class ConcertsController < ApplicationController
-  before_action :current_user, except: [:last, :search]
+  skip_before_action :current_user, only: [:last, :search]
+
   def index
     concerts = @user.concerts.all
     render json: concerts, status: 200
-  end
-
-  def show
-    concert = @user.concerts.find_by(concert_id: params[:id])
-    render json: concert, status: 200
   end
 
   def create
     concert = Concert.find_by(concert_id: params[:concert][:concert_id])
     if concert
       return render json: concert, status: 200 if @user.concerts.push(concert)
-      return render json: {error: 'error to push concert' }, status: 400
+      return render json: {error: "error to push concert" }, status: 400
     else
       concert = Concert.new(concert_params)
-      return render json: {error: 'impossible to create concert' }, status: 400 unless concert.save
+      return render json: {error: "impossible to create concert" }, status: 400 unless concert.save
 
       @user.concerts.push(concert)
       return render json: concert, status: 201
@@ -54,14 +49,6 @@ class ConcertsController < ApplicationController
    params.require(:concert).permit(:name, :date, :url, :genre, :subgenre, :country, :lat, :long, :city, :venue, :concert_id, :sale, :image)
   end
 
-  def current_user
-    @user = User.find_by(token: params[:token])
-    unless @user
-      render json: { error: "user not found"}, status: 404
-      return
-    end
-  end
-
   def handle_ticketmaster_API(url)
     response = HTTP.get(url)
     if JSON.parse(response.body)["page"]["totalElements"] == 0
@@ -69,7 +56,7 @@ class ConcertsController < ApplicationController
       return
     end
 
-    events = JSON.parse(response.body)['_embedded']['events']
+    events = JSON.parse(response.body)["_embedded"]["events"]
     @concerts = []
     events.each do |event|
       concert = {

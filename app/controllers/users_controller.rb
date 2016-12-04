@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :current_user, except: [:create]
+  skip_before_action :current_user, only: [:create]
 
   def create
     @user = User.new(user_params)
@@ -20,10 +20,5 @@ class UsersController < ApplicationController
   private
   def user_params
    params.permit(:name, :password, :email, :password_confirmation)
-  end
-
-  def current_user
-    @user = User.find_by(token: params[:token])
-    return  render json: { error: "user not found"}, status: 404 unless @user
   end
 end

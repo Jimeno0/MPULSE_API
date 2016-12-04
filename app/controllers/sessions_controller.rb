@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :current_user, only: [:destroy]
+  skip_before_action :current_user, except: [:destroy]
 
   def create
     user = User.find_by(email: params[:email])
@@ -14,11 +14,5 @@ class SessionsController < ApplicationController
   def destroy
     @user.update(token: nil)
     render json: @user, status: 200
-  end
-
-  private
-  def current_user
-    @user = User.find_by(token: params[:token])
-    return  render json: { error: "user not found"}, status: 404 unless @user
   end
 end

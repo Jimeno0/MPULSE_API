@@ -1,15 +1,14 @@
 class ArtistsController < ApplicationController
-  before_action :current_user
   before_action :find_artist
 
   def create
     if @artist
       return render json: @artist, status: 200 if @user.artists.push(@artist)
-      return render json: {error: 'error to push artist' }, status: 400
+      return render json: {error: "error to push artist" }, status: 400
     else
       @artist = Artist.new(name: params[:artists][:name])
       return render json: @artist, status: 201 if @artist.save
-      return render json: {error: 'impossible to create artist' }, status: 400
+      return render json: {error: "impossible to create artist" }, status: 400
     end
   end
 
@@ -27,10 +26,5 @@ class ArtistsController < ApplicationController
   private
   def find_artist
     @artist = Artist.find_by(name: params[:artists][:name].capitalize)
-  end
-
-  def current_user
-    @user = User.find_by(token: params[:token])
-    return  render json: { error: "user not found"}, status: 404 unless @user
   end
 end
