@@ -3,7 +3,7 @@ class ConcertsController < ApplicationController
   before_action :current_user, except: [:last, :search]
   def index
     concerts = @user.concerts.all
-    render json: concerts
+    render json: concerts, status: 200
   end
 
   def show
@@ -36,19 +36,17 @@ class ConcertsController < ApplicationController
 
   def last
     tomorrow = Date.tomorrow.to_s
-    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&startDateTime=#{tomorrow}T00:00:00Z&size=20&classificationName=Music"
+    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&startDateTime=#{tomorrow}T00:00:00Z&size=8&classificationName=Music"
     handle_ticketmaster_API(url)
-    render json: {response: @concerts}
   end
 
   def search
+    @artist = params[:search]
     url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&keyword=#{@artist}"
     handle_ticketmaster_API(url)
-    render json: {response: @concerts}
   end
 
   private
-
 
   def current_user
     @user = User.find_by(token: params[:token])
@@ -60,6 +58,11 @@ class ConcertsController < ApplicationController
 
   def handle_ticketmaster_API(url)
     response = HTTP.get(url)
+    if JSON.parse(response.body)["page"]["totalElements"] == 0
+      render json: { error: "No concerts for this artist yet"}, status: 404
+      return
+    end
+
     events = JSON.parse(response.body)['_embedded']['events']
     @concerts = []
     events.each do |event|
@@ -83,14 +86,13 @@ class ConcertsController < ApplicationController
       else
         concert["sale"] = false
       end
-
       images_array = event["images"]
       images_array.each do |image|
         concert["image"] =  image["url"] if image["ratio"] == "4_3"
       end
-
       @concerts.push(concert);
     end
+    render json: @concerts, status: 200
   end
 
 end
