@@ -10,16 +10,12 @@ RSpec.describe User, type: :model do
       user = User.create(name: "carlosperez",password:"111222333",email: "carlosc@icloud.com")
       expect(user.token).to be_truthy
     end
-    it "create a user" do
-      user = User.create(name: "carlosperez",password:"111222333",email: "carlosc@icloud.com")
-      expect(user).to eq(User.last)
-    end
     context "when field empty" do
       it "password cant be empty" do
         user = User.create(name: "carlosperez",password:"",email: "carlosc@icloud.com")
         expect(user.token).to be_falsey
       end
-      it "usesr cant be empty" do
+      it "user cant be empty" do
         user = User.create(name: "",password:"123123",email: "carlosc@icloud.com")
         expect(user.token).to be_falsey
       end

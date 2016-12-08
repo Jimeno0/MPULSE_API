@@ -6,13 +6,13 @@ RSpec.describe UsersController, type: :controller do
     context "on error " do
       it "responds 400 status with no params" do
         post :create
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
       it "responds error with bad email" do
         post :create, name: "Manolete",
           password: "123123123",
           email:"manoleteMailemail.com"
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
 
 
@@ -30,7 +30,7 @@ RSpec.describe UsersController, type: :controller do
       end
 
       it "responds 201 status when valid params" do
-        expect(response).to have_http_status(201)
+        expect(response.status).to eq(201)
       end
 
       it "increases the users number by 1" do
@@ -52,7 +52,7 @@ RSpec.describe UsersController, type: :controller do
       post :update, token: ""
     end
     it "gets error 404" do
-      expect(response).to have_http_status(404)
+      expect(response.status).to eq(404)
     end
     it "gets error msg"  do
       expect(JSON.parse(response.body)["error"]).to eq("user not found")
@@ -71,7 +71,7 @@ RSpec.describe UsersController, type: :controller do
         post :update, token: token, email: "manoleteteteemail.com"
       end
       it "gets error 404" do
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
       it "gets error msg"  do
         expect(JSON.parse(response.body)["error"]).to eq("cannot update user")
@@ -85,7 +85,7 @@ RSpec.describe UsersController, type: :controller do
       end
 
       it "gets status 201" do
-        expect(response).to have_http_status(201)
+        expect(response.status).to eq(201)
       end
 
       it "gets the token"  do
@@ -106,7 +106,7 @@ RSpec.describe UsersController, type: :controller do
       post :destroy, token: @token
     end
     it "gets status 200" do
-      expect(response).to have_http_status(200)
+      expect(response.status).to eq(200)
     end
     it "gets the new param"  do
       expect(JSON.parse(response.body)["name"]).to eq("Manolete")

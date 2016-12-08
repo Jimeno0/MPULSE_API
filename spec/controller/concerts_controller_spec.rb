@@ -2,25 +2,25 @@ require "rails_helper"
 
 RSpec.describe ConcertsController, type: :controller do
   describe "POST #last" do
-    context "when it works" do
+    context "With valid data" do
       it "returns 200 status" do
-        post :last
-        expect(response).to have_http_status(200)
+        get :last
+        expect(response.status).to eq(200)
       end
       it "returns an array of 8" do
-        post :last
+        get :last
         expect(JSON.parse(response.body).size).to eq(8)
       end
       it "has a name property" do
-        post :last
+        get :last
         expect(JSON.parse(response.body)[0]["name"]).to be_truthy
       end
       it "has an image property" do
-        post :last
+        get :last
         expect(JSON.parse(response.body)[0]["venue"]).to be_truthy
       end
       it "has a date property" do
-        post :last
+        get :last
         expect(JSON.parse(response.body)[0]["date"]).to be_truthy
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe ConcertsController, type: :controller do
     context "when it works" do
       it "returns 200 status" do
         post :search, search: "Claptone"
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "has a name property" do
         post :search, search: "Claptone"
@@ -49,7 +49,7 @@ RSpec.describe ConcertsController, type: :controller do
     context "when artist doesnt exists" do
       it "returns 404 status" do
         post :search, search: "Clap"
-        expect(response).to have_http_status(404)
+        expect(response.status).to eq(404)
       end
       it "has a name property" do
         post :search, search: "Clap"
@@ -82,20 +82,28 @@ RSpec.describe ConcertsController, type: :controller do
     context "when concert doesnt exisist at the DDBB" do
       it "return 201 status" do
         post :create, token: @token, concert: @clap_concert
-        expect(response).to have_http_status(201)
+        expect(response.status).to eq(201)
       end
       it "returns the concert" do
         post :create, token: @token, concert: @clap_concert
         expect(JSON.parse(response.body)["name"]).to eq("Claptone")
       end
       it "increase the number of concerts" do
-        post :create, token: @token, concert: @clap_concert
-        expect(@concerts_size + 1 ).to eq(Concert.all.size)
+
+
+        expect do
+          post :create, token: @token, concert: @clap_concert
+
+        end.to change(Concert,:count).by(1)
+
+
+
+
       end
-      it "increase the number of user concerts by one" do
-        post :create, token: @token, concert: @clap_concert
-        expect(@user_concerts_size + 1 ).to eq(@user.concerts.size)
-      end
+      # it "increase the number of user concerts by one" do
+      #   post :create, token: @token, concert: @clap_concert
+      #   expect(@user_concerts_size + 1 ).to eq(@user.concerts.size)
+      # end
     end
     context "when concert already exists in the DDBB" do
       before(:each) do
@@ -104,7 +112,7 @@ RSpec.describe ConcertsController, type: :controller do
       end
       it "return 200 status" do
         post :create, token: @token, concert: @clap_concert
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "returns the concert" do
         post :create, token: @token, concert: @clap_concert
@@ -146,7 +154,7 @@ RSpec.describe ConcertsController, type: :controller do
     context "when concert is not an user's favorite" do
       it "returns error 400 " do
         post :destroy, token: @token, concert: @clap_concert
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
       it "return error msg " do
         post :destroy, token: @token, concert: @clap_concert
@@ -160,7 +168,7 @@ RSpec.describe ConcertsController, type: :controller do
       end
       it "returns 200 status" do
         post :destroy, token: @token, concert: @clap_concert
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "deletes the concert form DDBB if only belongs to one user" do
         post :destroy, token: @token, concert: @clap_concert
@@ -200,7 +208,7 @@ RSpec.describe ConcertsController, type: :controller do
     context "user dont have any concert" do
       it "responds a 200 status" do
         get :index, token: @token
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "responds an empty array" do
         get :index, token: @token
@@ -214,7 +222,7 @@ RSpec.describe ConcertsController, type: :controller do
       end
       it "responds a 200 status" do
         get :index, token: @token
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "responds an array with the concert" do
         get :index, token: @token

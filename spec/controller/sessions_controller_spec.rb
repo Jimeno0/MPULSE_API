@@ -45,7 +45,7 @@ RSpec.describe SessionsController, type: :controller do
     it "gets 200 status" do
       expect(response).to have_http_status(200)
     end
-    it "sets token to nil" do
+    it "responds nil token" do
       expect(JSON.parse(response.body)["token"]).to be_nil
     end
   end

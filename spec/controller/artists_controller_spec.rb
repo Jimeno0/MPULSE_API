@@ -13,7 +13,7 @@ RSpec.describe ArtistsController, type: :controller do
       end
       it "returns 200 status" do
         post :create, token: @token, artists: {name: "Bonobo"}
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
       it "returns the artist name" do
         post :create, token: @token, artists: {name: "Bonobo"}
@@ -24,7 +24,7 @@ RSpec.describe ArtistsController, type: :controller do
     context "when artist doesnt exist" do
       it "returns 201 status" do
         post :create, token: @token, artists: {name: "Moderat"}
-        expect(response).to have_http_status(201)
+        expect(response.status).to eq(201)
       end
       it "returns the artist name" do
         post :create, token: @token, artists: {name: "Moderat"}
@@ -32,7 +32,7 @@ RSpec.describe ArtistsController, type: :controller do
       end
       it "error 400 on empty string" do
         post :create, token: @token, artists: {name: ""}
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
 
       it "error msg on empty string" do
@@ -52,7 +52,7 @@ RSpec.describe ArtistsController, type: :controller do
     context "when artist is not an user's favorite" do
       it "returns error 400 " do
         post :destroy, token: @token, artists: {name: "Moderat"}
-        expect(response).to have_http_status(400)
+        expect(response.status).to eq(400)
       end
       it "return error msg " do
         post :destroy, token: @token, artists: {name: "Moderat"}
@@ -67,7 +67,7 @@ RSpec.describe ArtistsController, type: :controller do
       end
       it "returns 200 status" do
         post :destroy, token: @token, artists: {name: "Apparat"}
-        expect(response).to have_http_status(200)
+        expect(response.status).to eq(200)
       end
 
       it "deletes the artist form DDBB if only belongs to one user" do

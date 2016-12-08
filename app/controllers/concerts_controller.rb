@@ -37,12 +37,11 @@ class ConcertsController < ApplicationController
   end
 
   def search
-    @artist = params[:search]
-    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&keyword=#{@artist}"
+    artist = params[:search].gsub(" ","%")
+    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&keyword=#{artist}"
     handle_ticketmaster_API(url)
   end
 
-  private
 
   private
   def concert_params
@@ -58,20 +57,26 @@ class ConcertsController < ApplicationController
 
     events = JSON.parse(response.body)["_embedded"]["events"]
     @concerts = []
+
     events.each do |event|
+      # binding.pry
       concert = {
         name: event["name"],
         date: event["dates"]["start"]["localDate"],
         url: event["url"],
         genre: event["classifications"][0]["genre"]["name"],
         subgenre: event["classifications"][0]["subGenre"]["name"],
-        country: event["_embedded"]["venues"][0]["country"]["name"],
-        lat:event["_embedded"]["venues"][0]["location"]["latitude"],
-        lon: event["_embedded"]["venues"][0]["location"]["longitude"],
-        city: event["_embedded"]["venues"][0]["city"]["name"],
-        venue: event["_embedded"]["venues"][0]["name"],
+
         concert_id: event["id"]
       }
+
+      if event["_embedded"]["venues"][0]["country"]
+        concert["country"] = event["_embedded"]["venues"][0]["country"]["countryCode"]
+        concert["lat"] = event["_embedded"]["venues"][0]["location"]["latitude"]
+        concert["lon"] = event["_embedded"]["venues"][0]["location"]["longitude"]
+        concert["city"] = event["_embedded"]["venues"][0]["city"]["name"]
+        concert["venue"] = event["_embedded"]["venues"][0]["name"]
+      end
 
       sale = event["dates"]["status"]["code"]
       if sale == "onsale"
@@ -81,7 +86,7 @@ class ConcertsController < ApplicationController
       end
       images_array = event["images"]
       images_array.each do |image|
-        concert["image"] =  image["url"] if image["ratio"] == "4_3"
+        concert["image"] =  image["url"] if image["ratio"] == "16_9"
       end
       @concerts.push(concert);
     end
