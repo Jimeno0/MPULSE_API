@@ -4,11 +4,11 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(email: params[:email])
     user_by_token = User.find_by(token: params[:token])
-
     if user && user.authenticate(params[:password])
       user.regenerate_token
       render json: user, status: 200
     elsif user_by_token
+
       render json: user_by_token, status: 200
     else
       render json: { error: "invalid user or password" }, status: 400

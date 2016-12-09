@@ -2,7 +2,9 @@ class UsersController < ApplicationController
   skip_before_action :current_user, only: [:create]
 
   def create
+
     @user = User.new(user_params)
+    binding.pry
     return render json: @user, status: 201 if @user.save
     render json: { error: "cannot create user"}, status: 400
   end

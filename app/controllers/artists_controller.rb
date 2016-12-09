@@ -2,6 +2,7 @@ class ArtistsController < ApplicationController
   before_action :find_artist
 
   def create
+    binding.pry
     if @artist
       return render json: @artist, status: 200 if @user.artists.push(@artist)
       return render json: {error: "error to push artist" }, status: 400
@@ -25,6 +26,7 @@ class ArtistsController < ApplicationController
 
   private
   def find_artist
+    binding.pry
     @artist = Artist.find_by(name: params[:artists][:name].capitalize)
   end
 end
