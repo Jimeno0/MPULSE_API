@@ -7,16 +7,13 @@ class ConcertsController < ApplicationController
   end
 
   def create
-    concert = Concert.find_by(concert_id: params[:concert][:concert_id])
+    concert = Concert.find_or_create_by(concert_params)
     if concert
-      return render json: concert, status: 200 if @user.concerts.push(concert)
-      return render json: {error: "error to push concert" }, status: 400
-    else
-      concert = Concert.new(concert_params)
-      return render json: {error: "impossible to create concert" }, status: 400 unless concert.save
-
+      binding.pry
       @user.concerts.push(concert)
-      return render json: concert, status: 201
+      render json: concert, status: 201
+    else
+      render json: {error: "impossible to create concert" }, status: 400
     end
   end
 

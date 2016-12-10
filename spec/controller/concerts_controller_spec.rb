@@ -95,24 +95,13 @@ RSpec.describe ConcertsController, type: :controller do
           post :create, token: @token, concert: @clap_concert
 
         end.to change(Concert,:count).by(1)
-
-
-
-
       end
-      # it "increase the number of user concerts by one" do
-      #   post :create, token: @token, concert: @clap_concert
-      #   expect(@user_concerts_size + 1 ).to eq(@user.concerts.size)
-      # end
+
     end
     context "when concert already exists in the DDBB" do
       before(:each) do
         Concert.create(@clap_concert)
         @concerts_after_create = Concert.all.size
-      end
-      it "return 200 status" do
-        post :create, token: @token, concert: @clap_concert
-        expect(response.status).to eq(200)
       end
       it "returns the concert" do
         post :create, token: @token, concert: @clap_concert
