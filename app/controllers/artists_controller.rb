@@ -1,15 +1,25 @@
 class ArtistsController < ApplicationController
-  before_action :find_artist
+  before_action :find_artist, only: [:destroy]
+
+  def index
+    artists = @user.artists.all
+    if artists
+      render json: artists, status: 200
+    else
+      render json: {error: "Cant get artists artist" }, status: 400
+    end
+  end
 
   def create
-    if @artist
-      return render json: @artist, status: 200 if @user.artists.push(@artist)
-      return render json: {error: "error to push artist" }, status: 400
+    artist = Artist.find_or_create_by(name: params[:artists][:name].capitalize)
+    if artist
+      binding.pry
+      @user.artists.push(artist)
+      render json: artist, status: 201
     else
-      @artist = Artist.new(name: params[:artists][:name])
-      return render json: @artist, status: 201 if @artist.save
-      return render json: {error: "impossible to create artist" }, status: 400
-    end
+      binding.pry
+      render json: {error: "impossible to create artist" }, status: 400
+    end  
   end
 
   def destroy

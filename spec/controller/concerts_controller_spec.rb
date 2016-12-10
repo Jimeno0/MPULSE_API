@@ -89,8 +89,6 @@ RSpec.describe ConcertsController, type: :controller do
         expect(JSON.parse(response.body)["name"]).to eq("Claptone")
       end
       it "increase the number of concerts" do
-
-
         expect do
           post :create, token: @token, concert: @clap_concert
 

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   post "/concerts/add", to: "concerts#create"
   delete "/concerts/", to: "concerts#destroy"
 
+  get "/artist/:token", to: "artists#index"
   post "/artist", to: "artists#create"
   delete "/artist", to: "artists#destroy"
 end
