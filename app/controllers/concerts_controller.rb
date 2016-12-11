@@ -9,7 +9,6 @@ class ConcertsController < ApplicationController
   def create
     concert = Concert.find_or_create_by(concert_params)
     if concert
-      binding.pry
       @user.concerts.push(concert)
       render json: concert, status: 201
     else
@@ -39,7 +38,6 @@ class ConcertsController < ApplicationController
     handle_ticketmaster_API(url)
   end
 
-
   private
   def concert_params
    params.require(:concert).permit(:name, :date, :url, :genre, :subgenre, :country, :lat, :long, :city, :venue, :concert_id, :sale, :image)
@@ -56,14 +54,12 @@ class ConcertsController < ApplicationController
     @concerts = []
 
     events.each do |event|
-      # binding.pry
       concert = {
         name: event["name"],
         date: event["dates"]["start"]["localDate"],
         url: event["url"],
         genre: event["classifications"][0]["genre"]["name"],
         subgenre: event["classifications"][0]["subGenre"]["name"],
-
         concert_id: event["id"]
       }
 
@@ -89,5 +85,4 @@ class ConcertsController < ApplicationController
     end
     render json: @concerts, status: 200
   end
-
 end
