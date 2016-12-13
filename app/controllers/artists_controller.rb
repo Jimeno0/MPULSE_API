@@ -20,7 +20,6 @@ class ArtistsController < ApplicationController
   end
 
   def destroy
-    binding.pry
     artist = Artist.find_by(name: params[:name].capitalize)
     user_artist = @user.artists.find_by(name: artist.name)
     return render json: {error: "user dont have this artist as favourite"}, status: 400 unless user_artist
@@ -28,6 +27,6 @@ class ArtistsController < ApplicationController
     user_artist.delete if user_artist.users.size <= 1
     @user.artists.delete(user_artist) if user_artist.users.size > 1
 
-    render json: {message: "artist removed as favorite"}, status: 200
+    render json: artist, status: 200
   end
 end
