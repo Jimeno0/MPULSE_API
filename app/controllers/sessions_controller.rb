@@ -8,7 +8,6 @@ class SessionsController < ApplicationController
       user.regenerate_token
       render json: user, status: 200
     elsif user_by_token
-
       render json: user_by_token, status: 200
     else
       render json: { error: "invalid user or password" }, status: 400

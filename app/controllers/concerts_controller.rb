@@ -17,18 +17,16 @@ class ConcertsController < ApplicationController
   end
 
   def destroy
-    user_concert = @user.concerts.find_by(concert_id: params[:concert][:concert_id])
+    user_concert = @user.concerts.find_by(concert_id: params[:concert_id])
     return render json: {error: "user dont have this concert as favourite"}, status: 400 unless user_concert
-
     user_concert.delete if user_concert.users.size <= 1
     @user.concerts.delete(user_concert) if user_concert.users.size > 1
-
     render json: user_concert, status: 200
   end
 
   def last
     tomorrow = Date.tomorrow.to_s
-    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&startDateTime=#{tomorrow}T00:00:00Z&size=8&classificationName=Music"
+    url = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VIxfWLncF71QZ3aoc9OLoeGU9NnAsVRj&startDateTime=#{tomorrow}T00:00:00Z&size=9&classificationName=Music"
     handle_ticketmaster_API(url)
   end
 
