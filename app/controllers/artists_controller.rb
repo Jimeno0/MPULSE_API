@@ -20,7 +20,8 @@ class ArtistsController < ApplicationController
   end
 
   def destroy
-    artist = Artist.find_by(name: params[:artists][:name].capitalize)
+    binding.pry
+    artist = Artist.find_by(name: params[:name].capitalize)
     user_artist = @user.artists.find_by(name: artist.name)
     return render json: {error: "user dont have this artist as favourite"}, status: 400 unless user_artist
 

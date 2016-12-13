@@ -12,11 +12,11 @@ Rails.application.routes.draw do
   get "/concerts/:token", to: "concerts#index"
 
   post "/concerts/add", to: "concerts#create"
-  # delete "/concerts/", to: "concerts#destroy"
   delete "/concerts/:token/:concert_id", to: "concerts#destroy"
 
 
   get "/artist/:token", to: "artists#index"
   post "/artist", to: "artists#create"
-  delete "/artist", to: "artists#destroy"
+
+  delete "/artist/:token/:name", to: "artists#destroy"
 end
