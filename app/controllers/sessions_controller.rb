@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :current_user, except: [:destroy]
+  skip_before_action :current_user, except: [:destroy, :create]
 
   def create
     user = User.find_by(email: params[:email])
@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:password])
       user.regenerate_token
       render json: user, status: 200
-    elsif user_by_token
+    elsif user_by_token && params[:token] != nil
       render json: user_by_token, status: 200
     else
       render json: { error: "invalid user or password" }, status: 400
