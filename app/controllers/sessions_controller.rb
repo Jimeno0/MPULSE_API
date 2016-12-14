@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :current_user, except: [:destroy, :create]
+  skip_before_action :current_user, except: [:destroy]
 
   def create
     user = User.find_by(email: params[:email])
