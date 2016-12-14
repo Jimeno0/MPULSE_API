@@ -11,17 +11,20 @@ class ConcertsController < ApplicationController
     if concert
       @user.concerts.push(concert)
       render json: concert, status: 201
-    else
-      render json: {error: "impossible to create concert" }, status: 400
+      return
     end
+    render json: {error: "impossible to create concert" }, status: 400
   end
 
   def destroy
     user_concert = @user.concerts.find_by(concert_id: params[:concert_id])
-    return render json: {error: "user dont have this concert as favourite"}, status: 400 unless user_concert
-    user_concert.delete if user_concert.users.size <= 1
-    @user.concerts.delete(user_concert) if user_concert.users.size > 1
-    render json: user_concert, status: 200
+    if user_concert
+      user_concert.delete if user_concert.users.size <= 1
+      @user.concerts.delete(user_concert) if user_concert.users.size > 1
+      render json: user_concert, status: 200
+      return
+    end
+    render json: {error: "user dont have this concert as favourite"}, status: 400
   end
 
   def last
