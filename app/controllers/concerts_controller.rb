@@ -61,7 +61,7 @@ class ConcertsController < ApplicationController
         concert_id: event["id"]
       }
 
-      if event["_embedded"]["venues"][0]["country"]
+      if (event["_embedded"]["venues"][0]["country"] && event["_embedded"]["venues"][0]["location"])
         concert["country"] = event["_embedded"]["venues"][0]["country"]["countryCode"]
         concert["lat"] = event["_embedded"]["venues"][0]["location"]["latitude"]
         concert["lon"] = event["_embedded"]["venues"][0]["location"]["longitude"]
