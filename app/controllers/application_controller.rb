@@ -5,6 +5,6 @@ class ApplicationController < ActionController::API
     if (params[:token])
       @user = User.find_by(token: params[:token])
     end
-    return  render json: { error: "user not found"}, status: 404 unless @user
+    render json: { error: "user not found"}, status: 404 unless @user
   end
 end
