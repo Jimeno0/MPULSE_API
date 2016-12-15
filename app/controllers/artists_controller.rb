@@ -23,7 +23,7 @@ class ArtistsController < ApplicationController
     artist = Artist.find_by(name: params[:name].capitalize)
     user_artist = @user.artists.find_by(name: artist.name)
     if user_artist
-      user_artist.delete if user_artist.users.size <= 1
+      user_artist.destroy if user_artist.users.size <= 1
       @user.artists.delete(user_artist) if user_artist.users.size > 1
       render json: artist, status: 200
       return

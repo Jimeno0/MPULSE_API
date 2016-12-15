@@ -19,7 +19,7 @@ class ConcertsController < ApplicationController
   def destroy
     user_concert = @user.concerts.find_by(concert_id: params[:concert_id])
     if user_concert
-      user_concert.delete if user_concert.users.size <= 1
+      user_concert.destroy if user_concert.users.size <= 1
       @user.concerts.delete(user_concert) if user_concert.users.size > 1
       render json: user_concert, status: 200
       return
