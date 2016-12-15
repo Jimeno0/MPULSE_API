@@ -26,14 +26,13 @@ class TicketmasterApi < ApplicationRecord
         concert["venue"] = event["_embedded"]["venues"][0]["name"]
       end
 
-      sale = event["dates"]["status"]["code"]
-      if sale == "onsale"
+      if event["dates"]["status"]["code"] == "onsale"
         concert["sale"] = true
       else
         concert["sale"] = false
       end
-      images_array = event["images"]
-      images_array.each do |image|
+
+      event["images"].each do |image|
         concert["image"] =  image["url"] if image["ratio"] == "16_9"
       end
       @concerts.push(concert);
